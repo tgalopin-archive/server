@@ -1,0 +1,21 @@
+user:
+    email:
+        invalid: Cet e-mail est invalide
+    firstName:
+        tooShort: Ce prénom est trop court (2 caractères minimum)
+        tooLong: Ce prénom est trop long (30 caractères maximum)
+    lastName:
+        tooShort: Ce nom de famille est trop court (2 caractères minimum)
+        tooLong: Ce nom de famille est trop long (30 caractères maximum)
+    birthDate:
+        invalid: Cette date de naissance est invalide
+    gender:
+        invalid: Ce sexe est invalide
+    semester:
+        invalid: Ce semestre est invalide
+    relationshipStatus:
+        invalid: Ce statut est invalide
+    searchedRelationPreference:
+        invalid: Cette préférence est invalide
+    searchedRelationType:
+        invalid: Ce type de relation est invalide

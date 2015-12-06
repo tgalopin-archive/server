@@ -1,0 +1,15 @@
+services:
+    resource.branch:
+        parent:    "api.resource"
+        arguments: [ "AppBundle\\Entity\\Branch" ]
+        tags:      [ { name: "api.resource" } ]
+
+    resource.course:
+        parent:    "api.resource"
+        arguments: [ "AppBundle\\Entity\\Course" ]
+        tags:      [ { name: "api.resource" } ]
+
+    resource.user:
+        parent:    "api.resource"
+        arguments: [ "AppBundle\\Entity\\User" ]
+        tags:      [ { name: "api.resource" } ]
