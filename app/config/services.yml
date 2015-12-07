@@ -37,7 +37,7 @@ services:
 
     resource.user:
         parent:    "api.resource"
-        arguments: [ "AppBundle\Entity\User" ]
+        arguments: [ "AppBundle\\Entity\\User" ]
         calls:
             -      [ "initItemOperations", [ [ ] ] ]
             -      [ "initCollectionOperations", [ [ "@resource.user.operation_post" ] ] ]
