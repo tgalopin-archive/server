@@ -64,7 +64,7 @@ class Course
     /**
      * @var User[]|ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="User", mappedBy="courses", cascade={"all"})
+     * @ORM\ManyToMany(targetEntity="User", inversedBy="courses", cascade={"all"})
      * @ORM\JoinTable(name="wink_users_courses")
      */
     private $users;
@@ -243,7 +243,7 @@ class Course
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {

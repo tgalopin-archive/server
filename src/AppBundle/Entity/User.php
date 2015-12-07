@@ -5,10 +5,12 @@ namespace AppBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Dunglas\ApiBundle\Annotation\Iri;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Date;
-use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Expression;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Constraints\Type;
 use Webmozart\Assert\Assert;
 
@@ -18,9 +20,12 @@ use Webmozart\Assert\Assert;
  * @see http://schema.org/Person Documentation on Schema.org
  *
  * @ORM\Entity
+ * @ORM\Table(name="wink_users")
  * @Iri("http://schema.org/Person")
+ *
+ * @UniqueEntity("email", message="user.email.alreadyTaken")
  */
-class User
+class User extends \FOS\UserBundle\Entity\User
 {
     const GENDER_MALE = 'male';
     const GENDER_FEMALE = 'female';
@@ -44,16 +49,26 @@ class User
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string Email address.
      *
-     * @ORM\Column(type="string", length=200)
-     * @Email(message="user.email.invalid")
      * @Iri("https://schema.org/email")
+     * @NotNull()
+     *
+     * @Groups({"user_read", "user_write"})
      */
-    private $email;
+    protected $email;
+
+    /**
+     * @var string Plain password. Used for model validation. Must not be persisted.
+     *
+     * @NotNull()
+     *
+     * @Groups({"user_write"})
+     */
+    protected $plainPassword;
 
     /**
      * @var string First name
@@ -61,7 +76,10 @@ class User
      * @ORM\Column(type="string", length=30)
      * @Type(type="string", message="user.firstName.invalid")
      * @Length(min=2, minMessage="user.firstName.tooShort", max=30, maxMessage="user.firstName.tooLong")
+     * @NotNull()
      * @Iri("https://schema.org/givenName")
+     *
+     * @Groups({"user_read", "user_write"})
      */
     private $firstName;
 
@@ -71,18 +89,12 @@ class User
      * @ORM\Column(type="string", length=30)
      * @Type(type="string", message="user.lastName.invalid")
      * @Length(min=2, minMessage="user.lastName.tooShort", max=30, maxMessage="user.lastName.tooLong")
+     * @NotNull()
      * @Iri("https://schema.org/familyName")
+     *
+     * @Groups({"user_read", "user_write"})
      */
     private $lastName;
-
-    /**
-     * @var \DateTime Date of birth.
-     *
-     * @ORM\Column(type="date", nullable=true)
-     * @Date(message="user.birthDate.invalid")
-     * @Iri("https://schema.org/birthDate")
-     */
-    private $birthDate;
 
     /**
      * @var string Gender of the person.
@@ -90,15 +102,31 @@ class User
      * @ORM\Column(type="string", length=20)
      * @Type(type="string", message="user.gender.invalid")
      * @Expression("value in this.availableGenders()", message="user.gender.invalid")
+     * @NotNull()
      * @Iri("https://schema.org/gender")
+     *
+     * @Groups({"user_read", "user_write"})
      */
     private $gender;
+
+    /**
+     * @var \DateTime Date of birth.
+     *
+     * @ORM\Column(type="date", nullable=true)
+     * @Date(message="user.birthDate.invalid")
+     * @Iri("https://schema.org/birthDate")
+     *
+     * @Groups({"user_read", "user_write"})
+     */
+    private $birthDate;
 
     /**
      * @var string A user picture
      *
      * @ORM\Column(nullable=true)
      * @Iri("https://schema.org/image")
+     *
+     * @Groups({"user_read"})
      */
     private $image;
 
@@ -106,6 +134,8 @@ class User
      * @var Branch
      *
      * @ORM\ManyToOne(targetEntity="Branch", cascade={"all"})
+     *
+     * @Groups({"user_read", "user_write"})
      */
     private $branch;
 
@@ -115,6 +145,8 @@ class User
      * @ORM\Column(type="integer", nullable=true)
      * @Type(type="integer", message="user.semester.invalid")
      * @Iri("https://schema.org/Integer")
+     *
+     * @Groups({"user_read", "user_write"})
      */
     private $semester;
 
@@ -123,6 +155,8 @@ class User
      *
      * @ORM\ManyToMany(targetEntity="Course", mappedBy="users", cascade={"all"})
      * @ORM\JoinTable(name="wink_users_courses")
+     *
+     * @Groups({"user_read"})
      */
     private $courses;
 
@@ -133,6 +167,8 @@ class User
      * @Type(type="string", message="user.relationshipStatus.invalid")
      * @Expression("value in this.availableStatus()", message="user.relationshipStatus.invalid")
      * @Iri("https://schema.org/Text")
+     *
+     * @Groups({"user_read", "user_write"})
      */
     private $relationshipStatus = self::STATUS_SINGLE;
 
@@ -143,6 +179,8 @@ class User
      * @Type(type="string", message="user.searchedRelationPreference.invalid")
      * @Expression("value in this.availableSearchingPreferences()", message="user.searchedRelationPreference.invalid")
      * @Iri("https://schema.org/Text")
+     *
+     * @Groups({"user_read", "user_write"})
      */
     private $searchedRelationPreference = self::SEARCHING_PREF_OPEN;
 
@@ -153,6 +191,8 @@ class User
      * @Type(type="string", message="user.searchedRelationType.invalid")
      * @Expression("value in this.availableSearchingTypes()", message="user.searchedRelationType.invalid")
      * @Iri("https://schema.org/Text")
+     *
+     * @Groups({"user_read", "user_write"})
      */
     private $searchedRelationType = self::SEARCHING_TYPE_CDI;
 
@@ -208,6 +248,8 @@ class User
      */
     public function __construct()
     {
+        parent::__construct();
+
         $this->courses = new ArrayCollection();
     }
 
@@ -232,6 +274,7 @@ class User
         Assert::string($email);
 
         $this->email = $email;
+        $this->username = $email;
 
         return $this;
     }

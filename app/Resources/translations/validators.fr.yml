@@ -1,6 +1,7 @@
 user:
     email:
         invalid: Cet e-mail est invalide
+        alreadyTaken: Cet e-mail est déjà utilisé
     firstName:
         tooShort: Ce prénom est trop court (2 caractères minimum)
         tooLong: Ce prénom est trop long (30 caractères maximum)

@@ -1,15 +1,48 @@
 services:
+    resource.branch.operation_get:
+        class:     "Dunglas\ApiBundle\Api\Operation\Operation"
+        public:    false
+        factory:   [ "@api.operation_factory", "createCollectionOperation" ]
+        arguments: [ "@resource.branch", "GET" ]
+
     resource.branch:
         parent:    "api.resource"
         arguments: [ "AppBundle\\Entity\\Branch" ]
+        calls:
+            -      [ "initItemOperations", [ [ ] ] ]
+            -      [ "initCollectionOperations", [ [ "@resource.branch.operation_get" ] ] ]
         tags:      [ { name: "api.resource" } ]
+
+
+    resource.course.operation_get:
+        class:     "Dunglas\ApiBundle\Api\Operation\Operation"
+        public:    false
+        factory:   [ "@api.operation_factory", "createCollectionOperation" ]
+        arguments: [ "@resource.course", "GET" ]
 
     resource.course:
         parent:    "api.resource"
         arguments: [ "AppBundle\\Entity\\Course" ]
+        calls:
+            -      [ "initItemOperations", [ [ ] ] ]
+            -      [ "initCollectionOperations", [ [ "@resource.course.operation_get" ] ] ]
         tags:      [ { name: "api.resource" } ]
+
+
+    resource.user.operation_post:
+        class:     "Dunglas\ApiBundle\Api\Operation\Operation"
+        public:    false
+        factory:   [ "@api.operation_factory", "createCollectionOperation" ]
+        arguments: [ "@resource.user", "POST" ]
 
     resource.user:
         parent:    "api.resource"
-        arguments: [ "AppBundle\\Entity\\User" ]
+        arguments: [ "AppBundle\Entity\User" ]
+        calls:
+            -      [ "initItemOperations", [ [ ] ] ]
+            -      [ "initCollectionOperations", [ [ "@resource.user.operation_post" ] ] ]
+            -      method:    "initNormalizationContext"
+                   arguments: [ { groups: [ "user_read" ] } ]
+            -      method:    "initDenormalizationContext"
+                   arguments: [ { groups: [ "user_write" ] } ]
         tags:      [ { name: "api.resource" } ]

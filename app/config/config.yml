@@ -64,6 +64,7 @@ swiftmailer:
 dunglas_api:
     title:       "%api_name%"
     description: "%api_description%"
+    #enable_fos_user: true
 
 # Nelmio CORS
 nelmio_cors:
@@ -85,3 +86,8 @@ nelmio_api_doc:
         request_format:
             formats:
                 json:       "application/json"
+
+fos_user:
+    db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
+    firewall_name: main
+    user_class: AppBundle\Entity\User
